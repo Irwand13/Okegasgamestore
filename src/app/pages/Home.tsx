@@ -85,7 +85,7 @@ const testimonials = [
     game: "PUBG Mobile",
   },
   {
-    name: "Cristiano Vio",
+    name: "Dominik Vio Szoboslzai",
     rating: 5,
     text: "Harga terjangkau, proses cepat, customer service responsif. Perfect toss!",
     game: "Free Fire",
@@ -250,7 +250,7 @@ export function Home() {
               Apa Kata Mereka?
             </span>
           </h2>
-          <p className="text-gray-400">Testimoni dari ribuan gamer yang puas</p>
+          <p className="text-gray-400">Testimoni dari para gamer yang puas dengan layanan kami</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
