@@ -104,7 +104,7 @@ export function Dashboard() {
               Dashboard
             </span>
           </h1>
-          <p className="text-gray-400">Selamat datang kembali, ProGamer88! 👋</p>
+          <p className="text-gray-400">Selamat datang kembali, Irwand! 👋</p>
         </div>
 
         {/* Stats */}
