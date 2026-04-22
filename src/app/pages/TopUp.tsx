@@ -1,29 +1,37 @@
 import { useState } from "react";
 import { Zap, CreditCard, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
-import { GameCard } from "../components/GameCard";
 
-// MENGGUNAKAN GAMBAR LOKAL dari folder image
+// IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
+import mobileLegendImg from "../../../image/mobile_legend.jpeg";
+import freeFireImg from "../../../image/free_fire.png";
+import pubgImg from "../../../image/pubg.png";
+import genshinImg from "../../../image/genshin.png";
+
 const games = [
   { 
     id: 1, 
     name: "Mobile Legends", 
-    image: "/image/mobile_legend.jpeg"
+    image: mobileLegendImg,
+    fallbackImage: "https://placehold.co/600x400/6366f1/ffffff?text=Mobile+Legends"
   },
   { 
     id: 2, 
     name: "Free Fire", 
-    image: "/image/free_fire.png"
+    image: freeFireImg,
+    fallbackImage: "https://placehold.co/600x400/ff4757/ffffff?text=Free+Fire"
   },
   { 
     id: 3, 
     name: "PUBG Mobile", 
-    image: "/image/pubg.png"
+    image: pubgImg,
+    fallbackImage: "https://placehold.co/600x400/2ed573/ffffff?text=PUBG"
   },
   { 
     id: 4, 
     name: "Genshin Impact", 
-    image: "/image/genshin.png"
+    image: genshinImg,
+    fallbackImage: "https://placehold.co/600x400/a55ff7/ffffff?text=Genshin"
   },
 ];
 
@@ -44,6 +52,25 @@ const paymentMethods = [
   { id: 5, name: "Credit Card", icon: CreditCard, fee: 2500 },
 ];
 
+// Komponen GameCard sederhana jika tidak ada
+const GameCard = ({ title, image }: { title: string; image: string }) => {
+  const [imgError, setImgError] = useState(false);
+  
+  return (
+    <div className="relative">
+      <img 
+        src={imgError ? `https://placehold.co/600x400/6366f1/ffffff?text=${title}` : image} 
+        alt={title}
+        className="w-full h-32 object-cover"
+        onError={() => setImgError(true)}
+      />
+      <div className="p-3 bg-[#12121a]">
+        <p className="text-sm font-semibold text-center">{title}</p>
+      </div>
+    </div>
+  );
+};
+
 export function TopUp() {
   const [selectedGame, setSelectedGame] = useState(games[0]);
   const [gameId, setGameId] = useState("");
@@ -57,7 +84,6 @@ export function TopUp() {
       return;
     }
     
-    // Simpan data ke localStorage (mock database)
     const orderData = {
       id: Date.now(),
       game: selectedGame.name,
@@ -70,13 +96,12 @@ export function TopUp() {
       status: "pending"
     };
     
-    // Ambil data pesanan lama atau buat array baru
     const existingOrders = localStorage.getItem("orders");
     const orders = existingOrders ? JSON.parse(existingOrders) : [];
     orders.push(orderData);
     localStorage.setItem("orders", JSON.stringify(orders));
     
-    alert(`✅ Checkout berhasil!\n\nDetail Pesanan:\nGame: ${selectedGame.name}\nUser ID: ${gameId}\nTotal: Rp ${totalPrice.toLocaleString("id-ID")}\n\nSimpan kode pembayaran Anda.`);
+    alert(`✅ Checkout berhasil!\n\nDetail Pesanan:\nGame: ${selectedGame.name}\nUser ID: ${gameId}\nTotal: Rp ${totalPrice.toLocaleString("id-ID")}`);
   };
 
   const selectedNominalData = nominals.find((n) => n.id === selectedNominal);
@@ -86,7 +111,7 @@ export function TopUp() {
   return (
     <div className="min-h-screen py-8 bg-gradient-to-br from-[#0a0a0f] via-[#12121a] to-[#1a1a2e]">
       <div className="container mx-auto px-4">
-        {/* Header dengan efek glassmorphism */}
+        {/* Header */}
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -94,7 +119,7 @@ export function TopUp() {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#a855f7] bg-clip-text text-transparent animate-gradient">
+              <span className="bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#a855f7] bg-clip-text text-transparent">
                 Top Up Game Instan
               </span>
             </h1>
@@ -110,10 +135,10 @@ export function TopUp() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20 hover:border-[#6366f1]/40 transition-all"
+              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm shadow-lg">
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
                   1
                 </span>
                 Pilih Game
@@ -145,10 +170,10 @@ export function TopUp() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20 hover:border-[#6366f1]/40 transition-all"
+              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm shadow-lg">
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
                   2
                 </span>
                 Masukkan Data Akun
@@ -163,7 +188,7 @@ export function TopUp() {
                     value={gameId}
                     onChange={(e) => setGameId(e.target.value)}
                     placeholder="Masukkan User ID"
-                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none text-white placeholder:text-gray-500 transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none text-white"
                   />
                 </div>
                 <div>
@@ -173,13 +198,12 @@ export function TopUp() {
                     value={serverId}
                     onChange={(e) => setServerId(e.target.value)}
                     placeholder="Masukkan Server ID"
-                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none text-white placeholder:text-gray-500 transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none text-white"
                   />
                 </div>
               </div>
-              <p className="text-sm text-gray-500 mt-3 flex items-center gap-1">
-                <span className="text-[#14b8a6] text-lg">ℹ️</span>
-                Pastikan User ID benar untuk menghindari kesalahan pengiriman
+              <p className="text-sm text-gray-500 mt-3">
+                ℹ️ Pastikan User ID benar untuk menghindari kesalahan pengiriman
               </p>
             </motion.div>
 
@@ -188,10 +212,10 @@ export function TopUp() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20 hover:border-[#6366f1]/40 transition-all"
+              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm shadow-lg">
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
                   3
                 </span>
                 Pilih Nominal Diamond
@@ -205,23 +229,19 @@ export function TopUp() {
                     onClick={() => setSelectedNominal(nominal.id)}
                     className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all ${
                       selectedNominal === nominal.id
-                        ? "border-[#6366f1] bg-[#6366f1]/10 shadow-lg shadow-[#6366f1]/25"
+                        ? "border-[#6366f1] bg-[#6366f1]/10"
                         : "border-[#6366f1]/20 hover:border-[#6366f1]/50"
                     }`}
                   >
                     {nominal.isPromo && (
-                      <span className="absolute -top-2 -right-2 px-2 py-1 rounded-full bg-gradient-to-r from-[#f59e0b] to-[#eab308] text-xs font-semibold shadow-lg animate-pulse">
+                      <span className="absolute -top-2 -right-2 px-2 py-1 rounded-full bg-gradient-to-r from-[#f59e0b] to-[#eab308] text-xs font-semibold">
                         🔥 PROMO
                       </span>
                     )}
                     <div className="text-center">
-                      <p className="text-2xl font-bold bg-gradient-to-r from-[#6366f1] to-[#a855f7] bg-clip-text text-transparent">
-                        {nominal.amount}
-                      </p>
+                      <p className="text-2xl font-bold text-[#6366f1]">{nominal.amount}</p>
                       {nominal.bonus > 0 && (
-                        <p className="text-sm text-[#14b8a6] font-semibold mt-1">
-                          +{nominal.bonus} Bonus
-                        </p>
+                        <p className="text-sm text-[#14b8a6]">+{nominal.bonus} Bonus</p>
                       )}
                       <p className="text-sm text-gray-400 mt-2">
                         Rp {nominal.price.toLocaleString("id-ID")}
@@ -240,10 +260,10 @@ export function TopUp() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20 hover:border-[#6366f1]/40 transition-all"
+              className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm shadow-lg">
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
                   4
                 </span>
                 Pilih Metode Pembayaran
@@ -255,7 +275,6 @@ export function TopUp() {
                     <motion.div
                       key={method.id}
                       whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
                       onClick={() => setSelectedPayment(method.id)}
                       className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${
                         selectedPayment === method.id
@@ -264,7 +283,7 @@ export function TopUp() {
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center shadow-md">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center">
                           <Icon className="w-5 h-5 text-white" />
                         </div>
                         <span className="font-semibold">{method.name}</span>
@@ -293,12 +312,9 @@ export function TopUp() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="p-6 rounded-2xl bg-gradient-to-br from-[#12121a] to-[#0f0f17] border border-[#6366f1]/20 shadow-xl"
+                className="p-6 rounded-2xl bg-gradient-to-br from-[#12121a] to-[#0f0f17] border border-[#6366f1]/20"
               >
-                <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
-                  <span>🛒</span>
-                  Ringkasan Pesanan
-                </h3>
+                <h3 className="text-xl font-semibold mb-4">🛒 Ringkasan Pesanan</h3>
 
                 <div className="space-y-3 py-4 border-t border-b border-[#6366f1]/20">
                   <div className="flex justify-between text-sm">
@@ -317,7 +333,7 @@ export function TopUp() {
                     <>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-400">Diamond</span>
-                        <span className="font-semibold">
+                        <span>
                           {selectedNominalData.amount}
                           {selectedNominalData.bonus > 0 && (
                             <span className="text-[#14b8a6] ml-1">
@@ -328,25 +344,21 @@ export function TopUp() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-400">Harga</span>
-                        <span>
-                          Rp {selectedNominalData.price.toLocaleString("id-ID")}
-                        </span>
+                        <span>Rp {selectedNominalData.price.toLocaleString("id-ID")}</span>
                       </div>
                     </>
                   )}
                   {selectedPaymentData && selectedPaymentData.fee > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">Biaya Admin</span>
-                      <span>
-                        Rp {selectedPaymentData.fee.toLocaleString("id-ID")}
-                      </span>
+                      <span>Rp {selectedPaymentData.fee.toLocaleString("id-ID")}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="flex justify-between items-center py-4">
-                  <span className="text-lg font-semibold">Total Pembayaran</span>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-[#6366f1] to-[#a855f7] bg-clip-text text-transparent">
+                  <span className="text-lg font-semibold">Total</span>
+                  <span className="text-2xl font-bold text-[#6366f1]">
                     Rp {totalPrice.toLocaleString("id-ID")}
                   </span>
                 </div>
@@ -354,21 +366,15 @@ export function TopUp() {
                 <button
                   onClick={handleCheckout}
                   disabled={!gameId || !selectedNominal || !selectedPayment}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#8b5cf6] hover:to-[#6366f1] text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#6366f1]/25 hover:shadow-[#8b5cf6]/50 flex items-center justify-center gap-2 group"
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#8b5cf6] hover:to-[#6366f1] text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 group"
                 >
                   <Zap className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                   Bayar Sekarang
                 </button>
 
-                <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-[#14b8a6]/10 to-[#0d9488]/10 border border-[#14b8a6]/20">
-                  <p className="text-sm text-center text-[#14b8a6] font-medium">
-                    ⚡ Estimasi Proses: <strong>Instan (±10 detik)</strong>
-                  </p>
-                  <p className="text-xs text-center text-gray-500 mt-2">
-                    ✓ Transaksi aman & terenkripsi
-                  </p>
-                  <p className="text-xs text-center text-gray-500">
-                    ✓ Garansi 100% uang kembali
+                <div className="mt-4 p-3 rounded-xl bg-[#14b8a6]/10 border border-[#14b8a6]/20">
+                  <p className="text-xs text-center text-[#14b8a6]">
+                    ⚡ Estimasi Proses: Instan (±10 detik)
                   </p>
                 </div>
               </motion.div>
@@ -376,19 +382,6 @@ export function TopUp() {
           </div>
         </div>
       </div>
-
-      {/* Tambahkan CSS untuk animasi gradient */}
-      <style jsx>{`
-        @keyframes gradient {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        .animate-gradient {
-          background-size: 200% auto;
-          animation: gradient 3s linear infinite;
-        }
-      `}</style>
     </div>
   );
 }
