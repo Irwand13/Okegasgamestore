@@ -4,30 +4,49 @@ import { Shield, Zap, Users, Star, CheckCircle2, ArrowRight } from "lucide-react
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
+// IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
+import mobileLegendImg from "../../../image/mobile_legend.jpeg";
+import freeFireImg from "../../../image/free_fire.png";
+import pubgImg from "../../../image/pubg.png";
+import genshinImg from "../../../image/genshin.png";
+import promoImg from "../../../image/promo.jpeg"; // IMPORT GAMBAR PROMO
+
 const games = [
-  {
-    id: 1,
+  { 
+    id: 1, 
+    name: "Mobile Legends", 
     title: "Mobile Legends",
-    image: "https://images.unsplash.com/photo-1761395013890-49090392ff0f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjBsZWdlbmRzJTIwZ2FtZXxlbnwxfHx8fDE3NzQ4NjA4MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: mobileLegendImg,
     isHot: true,
-    isPromo: true,
+    isPromo: false,
+    fallbackImage: "https://placehold.co/600x400/6366f1/ffffff?text=Mobile+Legends"
   },
-  {
-    id: 2,
+  { 
+    id: 2, 
+    name: "Free Fire", 
     title: "Free Fire",
-    image: "https://images.unsplash.com/photo-1675310854573-c5c8e4089426?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVlJTIwZmlyZSUyMGdhbWluZ3xlbnwxfHx8fDE3NzQ5NjQ1MTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: freeFireImg,
     isHot: true,
-  },
-  {
-    id: 3,
-    title: "PUBG Mobile",
-    image: "https://images.unsplash.com/photo-1564049489314-60d154ff107d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwdWJnJTIwbW9iaWxlJTIwZ2FtZXBsYXl8ZW58MXx8fHwxNzc0OTY0NTE3fDA&ixlib=rb-4.1.0&q=80&w=1080",
     isPromo: true,
+    fallbackImage: "https://placehold.co/600x400/ff4757/ffffff?text=Free+Fire"
   },
-  {
-    id: 4,
+  { 
+    id: 3, 
+    name: "PUBG Mobile", 
+    title: "PUBG Mobile",
+    image: pubgImg,
+    isHot: false,
+    isPromo: false,
+    fallbackImage: "https://placehold.co/600x400/2ed573/ffffff?text=PUBG"
+  },
+  { 
+    id: 4, 
+    name: "Genshin Impact", 
     title: "Genshin Impact",
-    image: "https://images.unsplash.com/photo-1769709992557-45387590ae7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnZW5zaGluJTIwaW1wYWN0JTIwZ2FtZXxlbnwxfHx8fDE3NzQ5Mzk1Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: genshinImg,
+    isHot: true,
+    isPromo: false,
+    fallbackImage: "https://placehold.co/600x400/a55ff7/ffffff?text=Genshin"
   },
 ];
 
@@ -54,21 +73,21 @@ const features = [
 
 const testimonials = [
   {
-    name: "Arif Gaming",
+    name: "Lamine Alfino",
     rating: 5,
-    text: "Top up super cepat! Ga nyampe 1 menit diamond langsung masuk. Recommended!",
+    text: "Top up super cepat! Ga nyampe 1 menit diamond langsung masuk. Recommended bangectt!",
     game: "Mobile Legends",
   },
   {
-    name: "Siti Nurhaliza",
+    name: "Lionel Irwan",
     rating: 5,
-    text: "Beli akun di sini aman banget pakai escrow. Seller juga fast respon!",
+    text: "Beli akun di sini aman banget pakai escrow. Seller juga fast respon! jos jis pokok e",
     game: "PUBG Mobile",
   },
   {
-    name: "Budi Santoso",
+    name: "Cristiano Vio",
     rating: 5,
-    text: "Harga terjangkau, proses cepat, customer service responsif. Perfect!",
+    text: "Harga terjangkau, proses cepat, customer service responsif. Perfect toss!",
     game: "Free Fire",
   },
 ];
@@ -80,14 +99,14 @@ export function Home() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <ImageWithFallback
-            src="https://images.unsplash.com/photo-1758179762049-615d9aac58ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBlc3BvcnRzJTIwbmVvbnxlbnwxfHx8fDE3NzQ4ODE4MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080"
-            alt="Gaming Background"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/80 via-[#0a0a0f]/90 to-[#0a0a0f]" />
+        {/* Background - Ganti dengan gambar lokal atau gradient saja */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0f] via-[#12121a] to-[#1a1a2e]">
+          {/* Decorative elements */}
+          <div className="absolute top-0 left-0 w-full h-full">
+            <div className="absolute top-20 left-10 w-72 h-72 bg-[#6366f1] rounded-full blur-[120px] opacity-20" />
+            <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#a855f7] rounded-full blur-[120px] opacity-20" />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#ec4899] rounded-full blur-[150px] opacity-10" />
+          </div>
         </div>
 
         {/* Content */}
@@ -125,10 +144,6 @@ export function Home() {
             </div>
           </motion.div>
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#6366f1] rounded-full blur-[120px] opacity-20" />
-        <div className="absolute bottom-20 right-10 w-72 h-72 bg-[#a855f7] rounded-full blur-[120px] opacity-20" />
       </section>
 
       {/* Popular Games */}
@@ -179,8 +194,8 @@ export function Home() {
                 viewport={{ once: true }}
                 className="relative group"
               >
-                <div className="relative p-8 rounded-2xl bg-[#12121a] border border-[#6366f1]/20 hover:border-[#6366f1]/50 transition-all">
-                  <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4`}>
+                <div className="relative p-8 rounded-2xl bg-[#12121a] border border-[#6366f1]/20 hover:border-[#6366f1]/50 transition-all hover:scale-105 duration-300">
+                  <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 shadow-lg`}>
                     <Icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
@@ -192,7 +207,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* Promo Banner */}
+      {/* Promo Banner - MENGGUNAKAN GAMBAR LOKAL promo.jpeg */}
       <section className="container mx-auto px-4 py-16">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#6366f1] to-[#a855f7] p-1">
           <div className="bg-[#12121a] rounded-[22px] p-8 md:p-12">
@@ -208,17 +223,18 @@ export function Home() {
                 </p>
                 <Link
                   to="/topup"
-                  className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-semibold hover:shadow-lg hover:shadow-[#6366f1]/50 transition-all"
+                  className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-semibold hover:shadow-lg hover:shadow-[#6366f1]/50 transition-all group"
                 >
                   Lihat Promo
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
               <div className="flex-shrink-0">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1729501309405-5710375095cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBzZXR1cCUyMHB1cnBsZXxlbnwxfHx8fDE3NzQ5NjQ1MTh8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                  alt="Promo"
-                  className="w-full md:w-80 h-64 object-cover rounded-2xl"
+                  src={promoImg}
+                  fallbackSrc="https://placehold.co/600x400/6366f1/ffffff?text=Promo+Spesial"
+                  alt="Promo Spesial"
+                  className="w-full md:w-80 h-64 object-cover rounded-2xl shadow-2xl"
                 />
               </div>
             </div>
@@ -245,7 +261,7 @@ export function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="p-6 rounded-2xl bg-[#12121a] border border-[#6366f1]/20 hover:border-[#6366f1]/50 transition-all"
+              className="p-6 rounded-2xl bg-[#12121a] border border-[#6366f1]/20 hover:border-[#6366f1]/50 transition-all hover:scale-105 duration-300"
             >
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
@@ -277,10 +293,10 @@ export function Home() {
             </p>
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-[#6366f1] font-semibold hover:shadow-lg hover:shadow-white/25 transition-all"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-[#6366f1] font-semibold hover:shadow-lg hover:shadow-white/25 transition-all group"
             >
               Daftar Sekarang Gratis
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
           <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
