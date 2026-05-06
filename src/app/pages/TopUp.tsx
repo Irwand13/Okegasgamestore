@@ -3,7 +3,7 @@ import { Zap, CreditCard, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import { supabase } from '../../lib/supabase';
 import {useAuth} from '../../contexts/AuthContext';
-import { toast } from "react-hot-toast";
+import { toast } from 'react-hot-toast';
 
 // IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
 import mobileLegendImg from "../../../image/mobile_legend.jpeg";
@@ -114,49 +114,45 @@ export function TopUp() {
   // Ambil nominal berdasarkan game yang dipilih
   const currentNominals = nominalByGame[selectedGame.name] || nominalByGame["Mobile Legends"];
   
-  const handleGameChange = (game: typeof games[0]) => {
-    setSelectedGame(game);
-    setSelectedNominal(null); // Reset nominal saat ganti game
-  };
+  const handleCheckout = async () => {
+  if (!gameId || !selectedNominal || !selectedPayment) {
+    toast.error("Mohon lengkapi semua data terlebih dahulu");
+    return;
+  }
 
-  const handleCheckout = () => {
-    if (!gameId || !selectedNominal || !selectedPayment) {
-      alert("Mohon lengkapi semua data terlebih dahulu");
-      return;
-    }
+  if (!user) {
+    toast.error("Silakan login terlebih dahulu");
+    navigate('/login');
+    return;
+  }
 
-    if (!user) {
-      toast.error("Silakan login terlebih dahulu");
-      navigate('/login');
-      return;
-    }
-
-    try {
-      const { error } = await supabase.from('orders').insert({
+  try {
+    const { error } = await supabase.from('orders').insert({
       user_id: user.id,
       game_name: selectedGame.name,
       game_id: gameId,
       server_id: serverId || null,
-      nominal_amount: selectedNominalData.amount,
-      nominal_bonus: selectedNominalData.bonus || 0,
-      price: selectedNominalData.price,
-      payment_method: selectedPaymentData.name,
+      nominal_amount: selectedNominalData?.amount,
+      nominal_bonus: selectedNominalData?.bonus || 0,
+      price: selectedNominalData?.price,
+      payment_method: selectedPaymentData?.name,
       total_price: totalPrice,
       status: 'pending'
     });
 
     if (error) throw error;
 
-    toast.success("Checkout berhasil! Pesanan Anda sedang diproses.");
-
-    setGameId("");
-    setServerId("");
+    toast.success('Pesanan berhasil dibuat! Silakan lanjutkan pembayaran.');
+    
+    // Reset form
+    setGameId('');
+    setServerId('');
     setSelectedNominal(null);
-    setSelectedPayment(null); 
-    } catch (error: any) {
-      toast.error(error.message || "Terjadi kesalahan saat checkout");
-    }
-  };
+    setSelectedPayment(null);
+  } catch (error: any) {
+    toast.error(error.message || 'Gagal membuat pesanan');
+  }
+};
     
     const orderData = {
       id: Date.now(),
