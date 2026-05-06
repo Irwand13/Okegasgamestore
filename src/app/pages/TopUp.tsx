@@ -1,44 +1,24 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Zap, CreditCard, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import { supabase } from '../../lib/supabase';
-import {useAuth} from '../../contexts/AuthContext';
-import { toast } from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
-// IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
+// IMPORT GAMBAR LOKAL
 import mobileLegendImg from "../../../image/mobile_legend.jpeg";
 import freeFireImg from "../../../image/free_fire.png";
 import pubgImg from "../../../image/pubg.png";
 import genshinImg from "../../../image/genshin.png";
 
 const games = [
-  { 
-    id: 1, 
-    name: "Mobile Legends", 
-    image: mobileLegendImg,
-    fallbackImage: "https://placehold.co/600x400/6366f1/ffffff?text=Mobile+Legends"
-  },
-  { 
-    id: 2, 
-    name: "Free Fire", 
-    image: freeFireImg,
-    fallbackImage: "https://placehold.co/600x400/ff4757/ffffff?text=Free+Fire"
-  },
-  { 
-    id: 3, 
-    name: "PUBG Mobile", 
-    image: pubgImg,
-    fallbackImage: "https://placehold.co/600x400/2ed573/ffffff?text=PUBG"
-  },
-  { 
-    id: 4, 
-    name: "Genshin Impact", 
-    image: genshinImg,
-    fallbackImage: "https://placehold.co/600x400/a55ff7/ffffff?text=Genshin"
-  },
+  { id: 1, name: "Mobile Legends", image: mobileLegendImg },
+  { id: 2, name: "Free Fire", image: freeFireImg },
+  { id: 3, name: "PUBG Mobile", image: pubgImg },
+  { id: 4, name: "Genshin Impact", image: genshinImg },
 ];
 
-// DATA NOMINAL PER GAME (dengan diskon 5%)
 const nominalByGame: Record<string, Array<{ id: number; amount: number; bonus: number; price: number; isPromo: boolean }>> = {
   "Mobile Legends": [
     { id: 1, amount: 39, bonus: 0, price: 11875, isPromo: false },
@@ -85,10 +65,8 @@ const paymentMethods = [
   { id: 5, name: "Credit Card", icon: CreditCard, fee: 2500 },
 ];
 
-// Komponen GameCard sederhana
 const GameCard = ({ title, image }: { title: string; image: string }) => {
   const [imgError, setImgError] = useState(false);
-  
   return (
     <div className="relative">
       <img 
@@ -105,84 +83,67 @@ const GameCard = ({ title, image }: { title: string; image: string }) => {
 };
 
 export function TopUp() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
   const [selectedGame, setSelectedGame] = useState(games[0]);
   const [gameId, setGameId] = useState("");
   const [serverId, setServerId] = useState("");
   const [selectedNominal, setSelectedNominal] = useState<number | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<number | null>(null);
 
-  // Ambil nominal berdasarkan game yang dipilih
   const currentNominals = nominalByGame[selectedGame.name] || nominalByGame["Mobile Legends"];
-  
-  const handleCheckout = async () => {
-  if (!gameId || !selectedNominal || !selectedPayment) {
-    toast.error("Mohon lengkapi semua data terlebih dahulu");
-    return;
-  }
-
-  if (!user) {
-    toast.error("Silakan login terlebih dahulu");
-    navigate('/login');
-    return;
-  }
-
-  try {
-    const { error } = await supabase.from('orders').insert({
-      user_id: user.id,
-      game_name: selectedGame.name,
-      game_id: gameId,
-      server_id: serverId || null,
-      nominal_amount: selectedNominalData?.amount,
-      nominal_bonus: selectedNominalData?.bonus || 0,
-      price: selectedNominalData?.price,
-      payment_method: selectedPaymentData?.name,
-      total_price: totalPrice,
-      status: 'pending'
-    });
-
-    if (error) throw error;
-
-    toast.success('Pesanan berhasil dibuat! Silakan lanjutkan pembayaran.');
-    
-    // Reset form
-    setGameId('');
-    setServerId('');
-    setSelectedNominal(null);
-    setSelectedPayment(null);
-  } catch (error: any) {
-    toast.error(error.message || 'Gagal membuat pesanan');
-  }
-};
-    
-    const orderData = {
-      id: Date.now(),
-      game: selectedGame.name,
-      gameId,
-      serverId: serverId || "-",
-      nominal: selectedNominalData,
-      payment: selectedPaymentData,
-      total: totalPrice,
-      date: new Date().toISOString(),
-      status: "pending"
-    };
-    
-    const existingOrders = localStorage.getItem("orders");
-    const orders = existingOrders ? JSON.parse(existingOrders) : [];
-    orders.push(orderData);
-    localStorage.setItem("orders", JSON.stringify(orders));
-    
-    alert(`✅ Checkout berhasil!\n\nDetail Pesanan:\nGame: ${selectedGame.name}\nUser ID: ${gameId}\nTotal: Rp ${totalPrice.toLocaleString("id-ID")}`);
-  };
-
-  const { user } = useAuth();
   const selectedNominalData = currentNominals.find((n) => n.id === selectedNominal);
   const selectedPaymentData = paymentMethods.find((p) => p.id === selectedPayment);
   const totalPrice = (selectedNominalData?.price || 0) + (selectedPaymentData?.fee || 0);
 
+  const handleGameChange = (game: typeof games[0]) => {
+    setSelectedGame(game);
+    setSelectedNominal(null);
+  };
+
+  const handleCheckout = async () => {
+    if (!gameId || !selectedNominal || !selectedPayment) {
+      toast.error("Mohon lengkapi semua data terlebih dahulu");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Silakan login terlebih dahulu");
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('orders').insert({
+        user_id: user.id,
+        game_name: selectedGame.name,
+        game_id: gameId,
+        server_id: serverId || null,
+        nominal_amount: selectedNominalData?.amount,
+        nominal_bonus: selectedNominalData?.bonus || 0,
+        price: selectedNominalData?.price,
+        payment_method: selectedPaymentData?.name,
+        total_price: totalPrice,
+        status: 'pending'
+      });
+
+      if (error) throw error;
+
+      toast.success('Pesanan berhasil dibuat! Silakan lanjutkan pembayaran.');
+      
+      setGameId('');
+      setServerId('');
+      setSelectedNominal(null);
+      setSelectedPayment(null);
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal membuat pesanan');
+    }
+  };
+
   return (
     <div className="min-h-screen py-8 bg-gradient-to-br from-[#0a0a0f] via-[#12121a] to-[#1a1a2e]">
       <div className="container mx-auto px-4">
-        {/* Header */}
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -199,9 +160,8 @@ export function TopUp() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Form Section */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Select Game */}
+            {/* Pilih Game */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -209,9 +169,7 @@ export function TopUp() {
               className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
-                  1
-                </span>
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">1</span>
                 Pilih Game
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -236,7 +194,7 @@ export function TopUp() {
               </div>
             </motion.div>
 
-            {/* Game ID & Server */}
+            {/* Input User ID */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -244,22 +202,18 @@ export function TopUp() {
               className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
-                  2
-                </span>
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">2</span>
                 Masukkan Data Akun
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">
-                    User ID <span className="text-red-400">*</span>
-                  </label>
+                  <label className="block text-sm text-gray-400 mb-2">User ID <span className="text-red-400">*</span></label>
                   <input
                     type="text"
                     value={gameId}
                     onChange={(e) => setGameId(e.target.value)}
                     placeholder="Masukkan User ID"
-                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none text-white"
+                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] outline-none text-white"
                   />
                 </div>
                 <div>
@@ -269,16 +223,13 @@ export function TopUp() {
                     value={serverId}
                     onChange={(e) => setServerId(e.target.value)}
                     placeholder="Masukkan Server ID"
-                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] focus:ring-2 focus:ring-[#6366f1]/20 outline-none text-white"
+                    className="w-full px-4 py-3 rounded-xl bg-[#1e1e2e] border border-[#6366f1]/20 focus:border-[#6366f1] outline-none text-white"
                   />
                 </div>
               </div>
-              <p className="text-sm text-gray-500 mt-3">
-                ℹ️ Pastikan User ID benar untuk menghindari kesalahan pengiriman
-              </p>
             </motion.div>
 
-            {/* Select Nominal - Dinamis berdasarkan game */}
+            {/* Pilih Nominal */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -286,10 +237,8 @@ export function TopUp() {
               className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
-                  3
-                </span>
-                Pilih Nominal {selectedGame.name === "Mobile Legends" ? "Diamond" : selectedGame.name === "Genshin Impact" ? "Genesis Crystals" : selectedGame.name === "PUBG Mobile" ? "UC" : "Diamond"}
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">3</span>
+                Pilih Nominal
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {currentNominals.map((nominal) => (
@@ -305,28 +254,20 @@ export function TopUp() {
                     }`}
                   >
                     {nominal.isPromo && (
-                      <span className="absolute -top-2 -right-2 px-2 py-1 rounded-full bg-gradient-to-r from-[#f59e0b] to-[#eab308] text-xs font-semibold">
-                        🔥 PROMO
-                      </span>
+                      <span className="absolute -top-2 -right-2 px-2 py-1 rounded-full bg-gradient-to-r from-[#f59e0b] to-[#eab308] text-xs font-semibold">🔥 PROMO</span>
                     )}
                     <div className="text-center">
                       <p className="text-2xl font-bold text-[#6366f1]">{nominal.amount.toLocaleString("id-ID")}</p>
-                      {nominal.bonus > 0 && (
-                        <p className="text-sm text-[#14b8a6]">+{nominal.bonus} Bonus</p>
-                      )}
-                      <p className="text-sm text-gray-400 mt-2">
-                        Rp {nominal.price.toLocaleString("id-ID")}
-                      </p>
+                      {nominal.bonus > 0 && <p className="text-sm text-[#14b8a6]">+{nominal.bonus} Bonus</p>}
+                      <p className="text-sm text-gray-400 mt-2">Rp {nominal.price.toLocaleString("id-ID")}</p>
                     </div>
-                    {selectedNominal === nominal.id && (
-                      <CheckCircle2 className="absolute top-2 right-2 w-5 h-5 text-[#14b8a6]" />
-                    )}
+                    {selectedNominal === nominal.id && <CheckCircle2 className="absolute top-2 right-2 w-5 h-5 text-[#14b8a6]" />}
                   </motion.div>
                 ))}
               </div>
             </motion.div>
 
-            {/* Payment Method */}
+            {/* Pilih Payment */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -334,9 +275,7 @@ export function TopUp() {
               className="p-6 rounded-2xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20"
             >
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">
-                  4
-                </span>
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-sm">4</span>
                 Pilih Metode Pembayaran
               </h3>
               <div className="space-y-3">
@@ -360,14 +299,8 @@ export function TopUp() {
                         <span className="font-semibold">{method.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        {method.fee > 0 && (
-                          <span className="text-sm text-gray-400">
-                            +Rp {method.fee.toLocaleString("id-ID")}
-                          </span>
-                        )}
-                        {selectedPayment === method.id && (
-                          <CheckCircle2 className="w-5 h-5 text-[#14b8a6]" />
-                        )}
+                        {method.fee > 0 && <span className="text-sm text-gray-400">+Rp {method.fee.toLocaleString("id-ID")}</span>}
+                        {selectedPayment === method.id && <CheckCircle2 className="w-5 h-5 text-[#14b8a6]" />}
                       </div>
                     </motion.div>
                   );
@@ -376,7 +309,7 @@ export function TopUp() {
             </motion.div>
           </div>
 
-          {/* Summary Section */}
+          {/* Ringkasan */}
           <div className="lg:col-span-1">
             <div className="sticky top-20">
               <motion.div 
@@ -386,7 +319,6 @@ export function TopUp() {
                 className="p-6 rounded-2xl bg-gradient-to-br from-[#12121a] to-[#0f0f17] border border-[#6366f1]/20"
               >
                 <h3 className="text-xl font-semibold mb-4">🛒 Ringkasan Pesanan</h3>
-
                 <div className="space-y-3 py-4 border-t border-b border-[#6366f1]/20">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Game</span>
@@ -395,25 +327,14 @@ export function TopUp() {
                   {gameId && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">User ID</span>
-                      <span className="font-mono text-sm bg-[#1e1e2e] px-2 py-1 rounded">
-                        {gameId}
-                      </span>
+                      <span className="font-mono text-sm bg-[#1e1e2e] px-2 py-1 rounded">{gameId}</span>
                     </div>
                   )}
                   {selectedNominalData && (
                     <>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">
-                          {selectedGame.name === "Genshin Impact" ? "Genesis Crystals" : selectedGame.name === "PUBG Mobile" ? "UC" : "Diamond"}
-                        </span>
-                        <span>
-                          {selectedNominalData.amount.toLocaleString("id-ID")}
-                          {selectedNominalData.bonus > 0 && (
-                            <span className="text-[#14b8a6] ml-1">
-                              +{selectedNominalData.bonus}
-                            </span>
-                          )}
-                        </span>
+                        <span className="text-gray-400">Item</span>
+                        <span>{selectedNominalData.amount.toLocaleString("id-ID")}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-400">Harga</span>
@@ -421,21 +342,11 @@ export function TopUp() {
                       </div>
                     </>
                   )}
-                  {selectedPaymentData && selectedPaymentData.fee > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Biaya Admin</span>
-                      <span>Rp {selectedPaymentData.fee.toLocaleString("id-ID")}</span>
-                    </div>
-                  )}
                 </div>
-
                 <div className="flex justify-between items-center py-4">
                   <span className="text-lg font-semibold">Total</span>
-                  <span className="text-2xl font-bold text-[#6366f1]">
-                    Rp {totalPrice.toLocaleString("id-ID")}
-                  </span>
+                  <span className="text-2xl font-bold text-[#6366f1]">Rp {totalPrice.toLocaleString("id-ID")}</span>
                 </div>
-
                 <button
                   onClick={handleCheckout}
                   disabled={!gameId || !selectedNominal || !selectedPayment}
@@ -444,15 +355,6 @@ export function TopUp() {
                   <Zap className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                   Bayar Sekarang
                 </button>
-
-                <div className="mt-4 p-3 rounded-xl bg-[#14b8a6]/10 border border-[#14b8a6]/20">
-                  <p className="text-xs text-center text-[#14b8a6]">
-                    ⚡ Estimasi Proses: Instan (±10 detik)
-                  </p>
-                  <p className="text-xs text-center text-gray-500 mt-1">
-                    💰 Harga sudah termasuk diskon 5%
-                  </p>
-                </div>
               </motion.div>
             </div>
           </div>
