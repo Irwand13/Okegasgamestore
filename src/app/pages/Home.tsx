@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { GameCard } from "../components/GameCard";
 import { Shield, Zap, Users, Star, CheckCircle2, ArrowRight, LogOut, User } from "lucide-react";
 import { motion } from "motion/react";
