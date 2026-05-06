@@ -6,12 +6,12 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { TopUp } from './pages/TopUp';
 import { Marketplace } from './pages/Marketplace';
-import { ProtectedRoute } from './components/ProtectedRoute';
+import { ProtectedRoute } from '../components/ProtectedRoute';
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Toaster 
           position="top-right"
           toastOptions={{
@@ -36,12 +36,9 @@ function App() {
           }}
         />
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
-          {/* Protected Routes (harus login) */}
           <Route 
             path="/topup" 
             element={
@@ -58,17 +55,9 @@ function App() {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="/marketplace/:id" 
-            element={
-              <ProtectedRoute>
-                <Marketplace />
-              </ProtectedRoute>
-            } 
-          />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
