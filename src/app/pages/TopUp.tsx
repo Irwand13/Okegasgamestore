@@ -3,6 +3,7 @@ import { Zap, CreditCard, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import { supabase } from '../../lib/supabase';
 import {useAuth} from '../../contexts/AuthContext';
+import { toast } from "react-hot-toast";
 
 // IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
 import mobileLegendImg from "../../../image/mobile_legend.jpeg";
@@ -123,11 +124,13 @@ export function TopUp() {
       alert("Mohon lengkapi semua data terlebih dahulu");
       return;
     }
+
     if (!user) {
       toast.error("Silakan login terlebih dahulu");
       navigate('/login');
       return;
     }
+
     try {
       const { error } = await supabase.from('orders').insert({
       user_id: user.id,
@@ -143,7 +146,17 @@ export function TopUp() {
     });
 
     if (error) throw error;
-  
+
+    toast.success("Checkout berhasil! Pesanan Anda sedang diproses.");
+
+    setGameId("");
+    setServerId("");
+    setSelectedNominal(null);
+    setSelectedPayment(null); 
+    } catch (error: any) {
+      toast.error(error.message || "Terjadi kesalahan saat checkout");
+    }
+  };
     
     const orderData = {
       id: Date.now(),
