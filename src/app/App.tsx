@@ -6,7 +6,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { TopUp } from './pages/TopUp';
 import { Marketplace } from './pages/Marketplace';
-import { ProtectedRoute } from '../components/ProtectedRoute';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {
   return (
