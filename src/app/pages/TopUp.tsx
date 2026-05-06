@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Zap, CreditCard, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
-import { supabase } from '../lib/supabase';
-import {useAuth} from '../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
+import {useAuth} from '../../contexts/AuthContext';
 
 // IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
 import mobileLegendImg from "../../../image/mobile_legend.jpeg";

@@ -3,7 +3,7 @@ import { GameCard } from "../components/GameCard";
 import { Shield, Zap, Users, Star, CheckCircle2, ArrowRight, LogOut, User } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 // IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
 import mobileLegendImg from "../../../image/mobile_legend.jpeg";
