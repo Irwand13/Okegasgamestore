@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { motion } from 'motion/react';
-import { Mail, Lock, User, UserPlus, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export function Register() {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export function Register() {
 
     const result = await register(email, password, username, fullName);
     if (result.success) {
+      toast.success('Registrasi berhasil! Silakan login.');
       navigate('/login');
     } else {
       setError(result.error || 'Registrasi gagal');
@@ -55,6 +57,11 @@ export function Register() {
         className="relative w-full max-w-md"
       >
         <div className="bg-[#12121a]/80 backdrop-blur-sm rounded-2xl border border-[#6366f1]/20 p-8 shadow-2xl">
+          {/* Back Button */}
+          <Link to="/" className="absolute top-4 left-4 text-gray-400 hover:text-white transition">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-[#6366f1] to-[#a855f7] bg-clip-text text-transparent">
               Daftar Akun Baru
@@ -78,7 +85,7 @@ export function Register() {
             </div>
 
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Nama Lengkap</label>
+              <label className="block text-sm text-gray-400 mb-2">Nama Lengkap (Opsional)</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <input
