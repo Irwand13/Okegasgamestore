@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Zap, CreditCard, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
+import { supabase } from '../lib/supabase';
+import {useAuth} from '../contexts/AuthContext';
 
 // IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
 import mobileLegendImg from "../../../image/mobile_legend.jpeg";
@@ -121,6 +123,27 @@ export function TopUp() {
       alert("Mohon lengkapi semua data terlebih dahulu");
       return;
     }
+    if (!user) {
+      toast.error("Silakan login terlebih dahulu");
+      navigate('/login');
+      return;
+    }
+    try {
+      const { error } = await supabase.from('orders').insert({
+      user_id: user.id,
+      game_name: selectedGame.name,
+      game_id: gameId,
+      server_id: serverId || null,
+      nominal_amount: selectedNominalData.amount,
+      nominal_bonus: selectedNominalData.bonus || 0,
+      price: selectedNominalData.price,
+      payment_method: selectedPaymentData.name,
+      total_price: totalPrice,
+      status: 'pending'
+    });
+
+    if (error) throw error;
+  
     
     const orderData = {
       id: Date.now(),
@@ -142,6 +165,7 @@ export function TopUp() {
     alert(`✅ Checkout berhasil!\n\nDetail Pesanan:\nGame: ${selectedGame.name}\nUser ID: ${gameId}\nTotal: Rp ${totalPrice.toLocaleString("id-ID")}`);
   };
 
+  const { user } = useAuth();
   const selectedNominalData = currentNominals.find((n) => n.id === selectedNominal);
   const selectedPaymentData = paymentMethods.find((p) => p.id === selectedPayment);
   const totalPrice = (selectedNominalData?.price || 0) + (selectedPaymentData?.fee || 0);

@@ -1,15 +1,16 @@
 import { Link, useNavigate } from "react-router";
 import { GameCard } from "../components/GameCard";
-import { Shield, Zap, Users, Star, CheckCircle2, ArrowRight } from "lucide-react";
+import { Shield, Zap, Users, Star, CheckCircle2, ArrowRight, LogOut, User } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useAuth } from '../contexts/AuthContext';
 
 // IMPORT GAMBAR LOKAL - PATH SESUAI STRUKTUR
 import mobileLegendImg from "../../../image/mobile_legend.jpeg";
 import freeFireImg from "../../../image/free_fire.png";
 import pubgImg from "../../../image/pubg.png";
 import genshinImg from "../../../image/genshin.png";
-import promoImg from "../../../image/promo.jpeg"; // IMPORT GAMBAR PROMO
+import promoImg from "../../../image/promo.jpeg";
 
 const games = [
   { 
@@ -94,9 +95,49 @@ const testimonials = [
 
 export function Home() {
   const navigate = useNavigate();
+  const { user, profile, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen">
+      {/* Navbar / User Menu */}
+      <div className="fixed top-4 right-4 z-50">
+        {user ? (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#12121a]/80 backdrop-blur-sm border border-[#6366f1]/20">
+              <User className="w-4 h-4 text-[#6366f1]" />
+              <span className="text-sm text-white">{profile?.username || user.email?.split('@')[0]}</span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-all border border-red-500/30"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="text-sm">Logout</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white text-sm font-semibold hover:shadow-lg transition-all"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="px-4 py-2 rounded-xl border border-[#6366f1] text-white text-sm font-semibold hover:bg-[#6366f1]/20 transition-all"
+            >
+              Daftar
+            </Link>
+          </div>
+        )}
+      </div>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Background - Ganti dengan gambar lokal atau gradient saja */}
@@ -292,10 +333,10 @@ export function Home() {
               Bergabung dengan ribuan gamer lainnya dan nikmati pengalaman transaksi yang aman dan cepat
             </p>
             <Link
-              to="/login"
+              to={user ? "/topup" : "/login"}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-[#6366f1] font-semibold hover:shadow-lg hover:shadow-white/25 transition-all group"
             >
-              Daftar Sekarang Gratis
+              {user ? "Top Up Sekarang" : "Daftar Sekarang Gratis"}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
