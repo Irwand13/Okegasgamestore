@@ -292,4 +292,42 @@ export function Marketplace() {
                   {/* Seller Info */}
                   <div className="flex items-center justify-between pt-3 border-t border-[#6366f1]/20">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] flex items-center justify-center text-xs font-semibold shadow-md">
+                        {product.seller[0]}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold">{product.seller}</p>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-[#f59e0b] text-[#f59e0b]" />
+                          <span className="text-xs text-gray-400">{product.rating}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Price */}
+                  <div className="pt-3 border-t border-[#6366f1]/20">
+                    <p className="text-sm text-gray-400">Harga</p>
+                    <p className="text-2xl font-bold bg-gradient-to-r from-[#6366f1] to-[#a855f7] bg-clip-text text-transparent">
+                      Rp {product.price.toLocaleString("id-ID")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {filteredProducts.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
+            <p className="text-xl text-gray-400">Tidak ada produk yang ditemukan</p>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+}
