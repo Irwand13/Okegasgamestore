@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Zap, CreditCard, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
@@ -85,12 +85,18 @@ const GameCard = ({ title, image }: { title: string; image: string }) => {
 export function TopUp() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isPageLoading, setIsPageLoading] = useState(true);
   
   const [selectedGame, setSelectedGame] = useState(games[0]);
   const [gameId, setGameId] = useState("");
   const [serverId, setServerId] = useState("");
   const [selectedNominal, setSelectedNominal] = useState<number | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<number | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsPageLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   const currentNominals = nominalByGame[selectedGame.name] || nominalByGame["Mobile Legends"];
   const selectedNominalData = currentNominals.find((n) => n.id === selectedNominal);
@@ -140,6 +146,17 @@ export function TopUp() {
       toast.error(error.message || 'Gagal membuat pesanan');
     }
   };
+
+  if (isPageLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0a0f] via-[#12121a] to-[#1a1a2e]">
+        <div className="text-center">
+          <div className="w-16 h-16 rounded-full border-4 border-[#6366f1] border-t-transparent animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">Memuat halaman Top Up...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-8 bg-gradient-to-br from-[#0a0a0f] via-[#12121a] to-[#1a1a2e]">
@@ -227,6 +244,9 @@ export function TopUp() {
                   />
                 </div>
               </div>
+              <p className="text-sm text-gray-500 mt-3">
+                ℹ️ Pastikan User ID benar untuk menghindari kesalahan pengiriman
+              </p>
             </motion.div>
 
             {/* Pilih Nominal */}
@@ -355,6 +375,10 @@ export function TopUp() {
                   <Zap className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                   Bayar Sekarang
                 </button>
+                <div className="mt-4 p-3 rounded-xl bg-[#14b8a6]/10 border border-[#14b8a6]/20">
+                  <p className="text-xs text-center text-[#14b8a6]">⚡ Estimasi Proses: Instan (±10 detik)</p>
+                  <p className="text-xs text-center text-gray-500 mt-1">💰 Harga sudah termasuk diskon 5%</p>
+                </div>
               </motion.div>
             </div>
           </div>
